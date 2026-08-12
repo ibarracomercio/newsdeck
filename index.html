@@ -183,7 +183,7 @@
         </div>
     </div>
     <script>
-        // Direcciones de servidores de noticias tácticas internacionales limpios de CORS
+        // Fuentes directas de servidores estables RSS alimentados como objetos JSON
         const FEEDS = {
             militar: "https://rss2json.com",
             politica: "https://rss2json.com",
@@ -231,7 +231,7 @@
             const listaActual = colasNoticias[categoria];
             if (!listaActual || listaActual.length === 0) return;
 
-            // Extraemos un artículo real del feed de internet de forma aleatoria para simular el tráfico constante
+            // Extrae una noticia real recopilada en línea de manera secuencial/aleatoria
             const item = listaActual[Math.floor(Math.random() * listaActual.length)];
             
             const tarjeta = document.createElement('div');
@@ -242,7 +242,6 @@
             let desc = item.description || "Haga clic en el enlace superior para ampliar la información de inteligencia.";
             desc = desc.replace(/<[^>]*>/g, '').substring(0, 150) + "...";
             
-            // Identificación automática de la fuente emisora
             let fuenteDetectada = "OSINT NET";
             if (categoria === 'militar') fuenteDetectada = "DEFENSA.COM";
             if (categoria === 'politica') fuenteDetectada = "EOM GEOPOLÍTICA";
@@ -257,30 +256,30 @@
                 </div>
             `;
             
-            // Inyección limpia arriba del todo (efecto empuje continuo hacia abajo)
+            // Inyección limpia arriba del todo (provoca el desplazamiento armónico constante)
             cajaFeed.insertBefore(tarjeta, cajaFeed.firstChild);
             textoEstado.innerText = `COUNT: ${cajaFeed.children.length}/20`;
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
-            // Sincronización primaria con los servidores internacionales en tiempo real
+            // Sincronización inicial directa con las centrales de internet
             await Promise.all([
                 consultarServidores('militar'),
                 consultarServidores('politica'),
                 consultarServidores('global')
             ]);
 
-            // Carga inicial obligatoria
+            // Forzar las primeras cargas armónicas en pantalla al abrir
             empujarAscensorVertical('militar', 'feed-militar', 'status-militar');
             empujarAscensorVertical('politica', 'feed-politica', 'status-politica');
             empujarAscensorVertical('global', 'feed-global', 'status-global');
 
-            // Frecuencia del ascensor continuo: mete cables arriba y desplaza el tablero
+            // Frecuencia del ascensor continuo: mete cables reales arriba y desplaza el tablero automáticamente
             setInterval(() => { empujarAscensorVertical('militar', 'feed-militar', 'status-militar'); }, 6000);
             setInterval(() => { empujarAscensorVertical('politica', 'feed-politica', 'status-politica'); }, 9000);
             setInterval(() => { empujarAscensorVertical('global', 'feed-global', 'status-global'); }, 7500);
 
-            // Cada 5 minutos el sistema re-consulta en segundo plano si hay nuevos artículos colgados en internet
+            // Cada 5 minutos el sistema consulta en segundo plano si los servidores tienen noticias más nuevas
             setInterval(() => {
                 consultarServidores('militar');
                 consultarServidores('politica');
