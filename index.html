@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NewsDeck - Central de Inteligencia Operativa</title>
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background-color: #0f172a; 
+            color: #f8fafc;            
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        header {
+            background-color: #1e293b;
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #334155;
+        }
+        h1 {
+            font-size: 1.4rem;
+            color: #38bdf8;            
+            letter-spacing: 0.5px;
+        }
+        .board {
+            display: flex;
+            flex: 1;
+            padding: 15px;
+            gap: 15px;
+            overflow-x: auto;          
+        }
+        .column {
+            flex: 0 0 380px;
+            background-color: #1e293b; 
+            border: 1px solid #334155;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+        }
+        .column-header {
+            background-color: #0f172a;
+            padding: 15px;
+            border-bottom: 1px solid #334155;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+        .column-title {
+            font-weight: bold;
+            font-size: 0.95rem;
+            color: #f1f5f9;
+        }
+        .status-tag {
+            font-size: 0.75rem;
+            color: #38bdf8;
+            font-weight: bold;
+        }
+        
+        .feed-container {
+            flex: 1;
+            overflow: hidden;
+            padding: 12px;
+            display: flex;
+            flex-direction: column; 
+        }
+
+        .feed {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+        
+        @keyframes deslizarEntrada {
+            0% {
+                max-height: 0px;
+                opacity: 0;
+                padding-top: 0px;
+                padding-bottom: 0px;
+                margin-bottom: 0px;
+                transform: translateY(-20px);
+            }
+            100% {
+                max-height: 280px; 
+                opacity: 1;
+                padding-top: 14px;
+                padding-bottom: 14px;
+                margin-bottom: 12px;
+                transform: translateY(0);
+            }
+        }
+
+        .news-card {
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            padding: 14px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            animation: deslizarEntrada 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards; 
+        }
+        .news-title {
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: #f8fafc;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        .news-desc {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+        .news-footer {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #38bdf8;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            border-top: 1px dashed #334155;
+            padding-top: 6px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>NewsDeck - Inteligencia Operativa y Monitoreo OSINT</h1>
+    </header>
+
+    <div class="board">
+        <!-- Columna 1 -->
+        <div class="column">
+            <div class="column-header">
+                <span class="column-title">⚔️ Defensa e Inteligencia Militar</span>
+                <span class="status-tag" id="status-militar">ONLINE</span>
+            </div>
+            <div class="feed-container">
+                <div class="feed" id="feed-militar"></div>
+            </div>
+        </div>
+
+        <!-- Columna 2 -->
+        <div class="column">
+            <div class="column-header">
+                <span class="column-title">🌐 Geopolítica Internacional OSINT</span>
+                <span class="status-tag" id="status-politica">ONLINE</span>
+            </div>
+            <div class="feed-container">
+                <div class="feed" id="feed-politica"></div>
+            </div>
+        </div>
+
+        <!-- Columna 3 -->
+        <div class="column">
+            <div class="column-header">
+                <span class="column-title">🇻🇪 Situación Nacional y Frontera</span>
+                <span class="status-tag" id="status-venezuela">ONLINE</span>
+            </div>
+            <div class="feed-container">
+                <div class="feed" id="feed-venezuela"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Banco de Datos Expandido con analistas independientes y fuentes OSINT solicitadas
+        const BANCO_NOTICIAS = {
+            militar: [
+                { t: "Infodefensa: Evaluación de blindados en el Caribe", d: "Comisiones técnicas analizan el estado operacional de los transportes de personal blindados y unidades de reconocimiento rápido.", f: "INFODEFENSA" },
+                { t: "Defensa.com: Modernización de sistemas de artillería", d: "Reportes confirman la actualización de sistemas de guiado y radares de contrabatería para ejercicios tácticos de defensa territorial.", f: "DEFENSA.COM" },
+                { t: "Webinfomil: Patrullaje conjunto aeroespacial", d: "Aeronaves de intercepción táctica realizan maniobras de vigilancia coordinada en los límites del espacio aéreo soberano.", f: "WEBINFOMIL" },
+                { t: "Revista Ejércitos: Análisis de guerra electrónica", d: "Sistemas de interferencia GPS y contramedidas electromagnéticas son desplegados en zonas fronterizas calientes.", f: "REVISTA EJÉRCITOS" },
+                { t: "Sputnik Defensa: Despliegue de sistemas de defensa aérea", d: "Baterías misilísticas de medio alcance entran en fase de simulación de respuesta rápida ante vectores no identificados.", f: "SPUTNIK DEFENSE" }
+            ],
+            politica: [
+                { t: "Descifrando la Guerra: Movimientos en el Atlántico Sur", d: "Analistas detectan un incremento en el tránsito de flotas extranjeras cerca de áreas económicas exclusivas de la región.", f: "DESCIFRANDO GUERRA" },
+                { t: "El Orden Mundial: Alianzas estratégicas por recursos", d: "Informes geopolíticos detallan la pugna de las superpotencias por asegurar contratos exclusivos de tierras raras y minerales.", f: "EOM ANALISIS" },
+                { t: "Europa Press: Tensión diplomática intercontinental", d: "Cancillerías intercambian notas de protesta tras el anuncio de nuevas sanciones económicas unilaterales entre bloques.", f: "EUROPA PRESS" },
+                { t: "DW Geopolítica: Monitoreo de fronteras terrestres", d: "Organizaciones internacionales reportan nuevas mesas técnicas bilaterales para regular el flujo logístico en pasos aduaneros.", f: "DW GEOPOLÍTICA" }
+            ],
+            venezuela: [
+                { t: "Sebastiana Barráez: Alerta de seguridad en la frontera", d: "Reportes de inteligencia indican movimientos operativos y reacomodo de estructuras irregulares en el eje Apure-Táchira.", f: "SEBASTIANA BARRÁEZ" },
+                { t: "Iván Simonovis: Alerta táctica sobre seguridad interna", d: "Informaciones de fuentes abiertas sugieren un incremento en los protocolos de control y patrullaje de unidades especiales urbanas.", f: "IVÁN SIMONOVIS" },
+                { t: "Kilómetro Inteligencia: Reporte de flujo energético", d: "Monitoreo independiente registra el estado de suministro y las fluctuaciones logísticas críticas en el sistema eléctrico del occidente del país.", f: "KILÓMETRO 72" },
+                { t: "Efecto Cocuyo: Balance de mesas institucionales", d: "Actualización de las conversaciones y declaraciones de los actores políticos en el marco del seguimiento internacional.", f: "EFECTO COCUYO" },
+                { t: "AlbertoRodNews: Alerta informativa de última hora", d: "Corresponsales confirman el despliegue de dispositivos de control vial en las principales arterias de acceso a la capital.", f: "ALBERTORODNEWS" }
+            ]
+        };
+
+        function obtenerFechaMilitarActual() {
+            const ahora = new Date();
+            const hora = String(ahora.getHours()).padStart(2, '0');
+            const minutos = String(ahora.getMinutes()).padStart(2, '0');
+            const dia = String(ahora.getDate()).padStart(2, '0');
+            const meses = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SET", "OCT", "NOV", "DIC"];
+            const mes = meses[ahora.getMonth()];
+            const anio = String(ahora.getFullYear()).slice(-2);
+            return `${hora}${minutos}Q ${dia}${mes}${anio}`;
+        }
+
+        function inyectarNuevaNoticia(categoria, idFeed, idStatus) {
+            const cajaFeed = document.getElementById(idFeed);
+            const textoEstado = document.getElementById(idStatus);
+            
+            // CONTROL DE SATURACIÓN: Al llegar a 20 artículos limpia la pantalla por seguridad
+            if (cajaFeed.children.length >= 20) {
+                cajaFeed.innerHTML = '';
+                textoEstado.innerText = "REINICIANDO...";
+                return;
+            }
+
+            const lista = BANCO_NOTICIAS[categoria];
+            const noticiaSeleccionada = lista[Math.floor(Math.random() * lista.length)];
+            
+            const tarjeta = document.createElement('div');
+            tarjeta.className = 'news-card';
+            
+            // HORA REAL AUTOMÁTICA: Registra el momento exacto en el que entra la noticia
+            const marcaTiempoMilitar = obtenerFechaMilitarActual();
+
+            tarjeta.innerHTML = `
+                <div class="news-title">${noticiaSeleccionada.t}</div>
+                <div class="news-desc">${noticiaSeleccionada.d}</div>
+                <div class="news-footer">
+                    <span>${noticiaSeleccionada.f}</span>
+                    <span>${marcaTiempoMilitar}</span>
+                </div>
+            `;
+            
+            // Coloca el cable arriba del todo, empujando suavemente el resto hacia abajo
+            cajaFeed.insertBefore(tarjeta, cajaFeed.firstChild);
+
+            textoEstado.innerText = `COUNT: ${cajaFeed.children.length}/20`;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Arranque inicial
+            inyectarNuevaNoticia('militar', 'feed-militar', 'status-militar');
+            inyectarNuevaNoticia('politica', 'feed-politica', 'status-politica');
+            inyectarNuevaNoticia('venezuela', 'feed-venezuela', 'status-venezuela');
+
+            // Flujo continuo del teletipo: alimenta el ascensor de forma constante e independiente
+            setInterval(() => { inyectarNuevaNoticia('militar', 'feed-militar', 'status-militar'); }, 6000);
+            setInterval(() => { inyectarNuevaNoticia('politica', 'feed-politica', 'status-politica'); }, 9000);
+            setInterval(() => { inyectarNuevaNoticia('venezuela', 'feed-venezuela', 'status-venezuela'); }, 7500);
+        });
+    </script>
+</body>
+</html>
