@@ -1,5 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NewsDeck - Central de Monitoreo Global</title>
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background-color: #0f172a; color: #f8fafc; height: 100vh; display: flex; flex-direction: column; overflow: hidden;
+        }
+        header { background-color: #1e293b; padding: 15px; text-align: center; border-bottom: 1px solid #334155; }
+        h1 { font-size: 1.4rem; color: #38bdf8; letter-spacing: 0.5px; }
+        .board { display: flex; flex: 1; padding: 15px; gap: 15px; overflow-x: auto; }
+        .column { flex: 0 0 380px; background-color: #1e293b; border: 1px solid #334155; border-radius: 8px; display: flex; flex-direction: column; height: 100%; overflow: hidden; }
+        .column-header { background-color: #0f172a; padding: 15px; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; z-index: 10; }
+        .column-title { font-weight: bold; font-size: 0.95rem; color: #f1f5f9; }
+        .status-tag { font-size: 0.75rem; color: #38bdf8; font-weight: bold; }
+        .feed-container { flex: 1; overflow: hidden; padding: 12px; display: flex; flex-direction: column; }
+        .feed { display: flex; flex-direction: column; width: 100%; }
+        
+        @keyframes deslizarEntrada {
+            0% { max-height: 0px; opacity: 0; padding-top: 0px; padding-bottom: 0px; margin-bottom: 0px; transform: translateY(-20px); }
+            100% { max-height: 280px; opacity: 1; padding-top: 14px; padding-bottom: 14px; margin-bottom: 12px; transform: translateY(0); }
+        }
+        .news-card {
+            background-color: #0f172a; border: 1px solid #334155; border-radius: 6px; padding: 14px; margin-bottom: 12px; overflow: hidden;
+            animation: deslizarEntrada 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards; 
+        }
+        .news-title { font-size: 0.95rem; font-weight: bold; color: #f8fafc; margin-bottom: 8px; line-height: 1.4; }
+        .news-title a { color: #f8fafc; text-decoration: none; }
+        .news-title a:hover { color: #38bdf8; }
+        .news-desc { font-size: 0.85rem; color: #94a3b8; line-height: 1.5; margin-bottom: 8px; }
+        .news-footer { display: flex; justify-content: space-between; font-size: 0.75rem; color: #38bdf8; font-family: 'Courier New', Courier, monospace; font-weight: bold; border-top: 1px dashed #334155; padding-top: 6px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>NewsDeck - Inteligencia Operativa y Alertas Globales</h1>
+    </header>
+
+    <div class="board">
+        <div class="column">
+            <div class="column-header">
+                <span class="column-title">⚔️ Defensa e Industria Militar</span>
+                <span class="status-tag" id="status-militar">CONECTANDO</span>
+            </div>
+            <div class="feed-container"><div class="feed" id="feed-militar"></div></div>
+        </div>
+
+        <div class="column">
+            <div class="column-header">
+                <span class="column-title">🌐 Geopolítica Internacional</span>
+                <span class="status-tag" id="status-politica">CONECTANDO</span>
+            </div>
+            <div class="feed-container"><div class="feed" id="feed-politica"></div></div>
+        </div>
+
+        <div class="column">
+            <div class="column-header">
+                <span class="column-title">📰 Última Hora Internacional</span>
+                <span class="status-tag" id="status-global">CONECTANDO</span>
+            </div>
+            <div class="feed-container"><div class="feed" id="feed-global"></div></div>
+        </div>
+    </div>
+
     <script>
-        // Tu clave personal y exclusiva vinculada exitosamente sin caracteres erróneos
+        // Tu clave personal inyectada de forma milimétrica en los servidores oficiales
         const API_KEY = "2d4a08dd3f64f5c6cb35130532aac934"; 
         
         const URLS = {
@@ -13,10 +83,10 @@
         function obtenerFechaMilitarActual() {
             const ahora = new Date();
             const hora = String(ahora.getHours()).padStart(2, '0');
-            const minutes = String(ahora.getMinutes()).padStart(2, '0');
+            const minutos = String(ahora.getMinutes()).padStart(2, '0');
             const dia = String(ahora.getDate()).padStart(2, '0');
             const meses = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SET", "OCT", "NOV", "DIC"];
-            return `${hora}${minutes}Q ${dia}${meses[ahora.getMonth()]}${String(ahora.getFullYear()).slice(-2)}`;
+            return `${hora}${minutos}Q ${dia}${meses[ahora.getMonth()]}${String(ahora.getFullYear()).slice(-2)}`;
         }
 
         async function consultarServidores(categoria) {
@@ -36,6 +106,8 @@
             const cajaFeed = document.getElementById(idFeed);
             const textoEstado = document.getElementById(idStatus);
             
+            if (!cajaFeed) return;
+
             if (cajaFeed.children.length >= 20) {
                 cajaFeed.innerHTML = '';
                 textoEstado.innerText = "REINICIANDO...";
@@ -80,7 +152,6 @@
             empujarAscensorVertical('politica', 'feed-politica', 'status-politica');
             empujarAscensorVertical('global', 'feed-global', 'status-global');
 
-            // Frecuencia del ascensor automatizado continuo
             setInterval(() => { empujarAscensorVertical('militar', 'feed-militar', 'status-militar'); }, 6000);
             setInterval(() => { empujarAscensorVertical('politica', 'feed-politica', 'status-politica'); }, 9000);
             setInterval(() => { empujarAscensorVertical('global', 'feed-global', 'status-global'); }, 7500);
@@ -88,3 +159,4 @@
     </script>
 </body>
 </html>
+
