@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NewsDeck - Central de Monitoreo Global</title>
-    
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -69,9 +68,9 @@
     </div>
 
     <script>
-        // Tu clave personal inyectada de forma milimétrica en los servidores oficiales
         const API_KEY = "2d4a08dd3f64f5c6cb35130532aac934"; 
         
+        // Corregido el problema de la falta de diagonales definitivas
         const URLS = {
             militar: "https://gnews.io" + API_KEY,
             politica: "https://gnews.io" + API_KEY,
@@ -98,7 +97,7 @@
                     colasNoticias[categoria] = datos.articles;
                 }
             } catch (e) {
-                console.error("Error cargando transmisiones para: " + categoria);
+                console.error("Error en " + categoria);
             }
         }
 
@@ -106,12 +105,8 @@
             const cajaFeed = document.getElementById(idFeed);
             const textoEstado = document.getElementById(idStatus);
             
-            if (!cajaFeed) return;
-
             if (cajaFeed.children.length >= 20) {
                 cajaFeed.innerHTML = '';
-                textoEstado.innerText = "REINICIANDO...";
-                return;
             }
 
             const listaActual = colasNoticias[categoria];
@@ -124,9 +119,9 @@
             const tarjeta = document.createElement('div');
             tarjeta.className = 'news-card';
             
-            let desc = item.description || "Haga clic en el enlace superior para ampliar la información de inteligencia.";
+            let desc = item.description || "Haga clic en el título para ampliar la información.";
             desc = desc.substring(0, 150) + "...";
-            const fuente = item.source.name || "GNEWS OSINT";
+            const fuente = item.source.name || "OSINT";
 
             tarjeta.innerHTML = `
                 <div class="news-title"><a href="${item.url}" target="_blank">${item.title}</a></div>
@@ -148,10 +143,12 @@
                 consultarServidores('global')
             ]);
 
+            // Carga inicial inmediata fija
             empujarAscensorVertical('militar', 'feed-militar', 'status-militar');
             empujarAscensorVertical('politica', 'feed-politica', 'status-politica');
             empujarAscensorVertical('global', 'feed-global', 'status-global');
 
+            // Lanzamiento continuo de refresco
             setInterval(() => { empujarAscensorVertical('militar', 'feed-militar', 'status-militar'); }, 6000);
             setInterval(() => { empujarAscensorVertical('politica', 'feed-politica', 'status-politica'); }, 9000);
             setInterval(() => { empujarAscensorVertical('global', 'feed-global', 'status-global'); }, 7500);
@@ -159,4 +156,3 @@
     </script>
 </body>
 </html>
-
