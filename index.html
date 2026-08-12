@@ -6,140 +6,34 @@
     <title>NewsDeck - Central de Monitoreo Global</title>
     
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-            background-color: #0f172a; 
-            color: #f8fafc;            
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+            background-color: #0f172a; color: #f8fafc; height: 100vh; display: flex; flex-direction: column; overflow: hidden;
         }
-        header {
-            background-color: #1e293b;
-            padding: 15px;
-            text-align: center;
-            border-bottom: 1px solid #334155;
-        }
-        h1 {
-            font-size: 1.4rem;
-            color: #38bdf8;            
-            letter-spacing: 0.5px;
-        }
-        .board {
-            display: flex;
-            flex: 1;
-            padding: 15px;
-            gap: 15px;
-            overflow-x: auto;          
-        }
-        .column {
-            flex: 0 0 380px;
-            background-color: #1e293b; 
-            border: 1px solid #334155;
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            overflow: hidden;
-        }
-        .column-header {
-            background-color: #0f172a;
-            padding: 15px;
-            border-bottom: 1px solid #334155;
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 10;
-        }
-        .column-title {
-            font-weight: bold;
-            font-size: 0.95rem;
-            color: #f1f5f9;
-        }
-        .status-tag {
-            font-size: 0.75rem;
-            color: #38bdf8;
-            font-weight: bold;
-        }
-        
-        .feed-container {
-            flex: 1;
-            overflow: hidden;
-            padding: 12px;
-            display: flex;
-            flex-direction: column; 
-        }
-        .feed {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-        }
+        header { background-color: #1e293b; padding: 15px; text-align: center; border-bottom: 1px solid #334155; }
+        h1 { font-size: 1.4rem; color: #38bdf8; letter-spacing: 0.5px; }
+        .board { display: flex; flex: 1; padding: 15px; gap: 15px; overflow-x: auto; }
+        .column { flex: 0 0 380px; background-color: #1e293b; border: 1px solid #334155; border-radius: 8px; display: flex; flex-direction: column; height: 100%; overflow: hidden; }
+        .column-header { background-color: #0f172a; padding: 15px; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; z-index: 10; }
+        .column-title { font-weight: bold; font-size: 0.95rem; color: #f1f5f9; }
+        .status-tag { font-size: 0.75rem; color: #38bdf8; font-weight: bold; }
+        .feed-container { flex: 1; overflow: hidden; padding: 12px; display: flex; flex-direction: column; }
+        .feed { display: flex; flex-direction: column; width: 100%; }
         
         @keyframes deslizarEntrada {
-            0% {
-                max-height: 0px;
-                opacity: 0;
-                padding-top: 0px;
-                padding-bottom: 0px;
-                margin-bottom: 0px;
-                transform: translateY(-20px);
-            }
-            100% {
-                max-height: 280px; 
-                opacity: 1;
-                padding-top: 14px;
-                padding-bottom: 14px;
-                margin-bottom: 12px;
-                transform: translateY(0);
-            }
+            0% { max-height: 0px; opacity: 0; padding-top: 0px; padding-bottom: 0px; margin-bottom: 0px; transform: translateY(-20px); }
+            100% { max-height: 280px; opacity: 1; padding-top: 14px; padding-bottom: 14px; margin-bottom: 12px; transform: translateY(0); }
         }
         .news-card {
-            background-color: #0f172a;
-            border: 1px solid #334155;
-            border-radius: 6px;
-            padding: 14px;
-            margin-bottom: 12px;
-            overflow: hidden;
+            background-color: #0f172a; border: 1px solid #334155; border-radius: 6px; padding: 14px; margin-bottom: 12px; overflow: hidden;
             animation: deslizarEntrada 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards; 
         }
-        .news-title {
-            font-size: 0.95rem;
-            font-weight: bold;
-            color: #f8fafc;
-            margin-bottom: 8px;
-            line-height: 1.4;
-        }
-        .news-title a {
-            color: #f8fafc;
-            text-decoration: none;
-        }
-        .news-title a:hover {
-            color: #38bdf8;
-        }
-        .news-desc {
-            font-size: 0.85rem;
-            color: #94a3b8;
-            line-height: 1.5;
-            margin-bottom: 8px;
-        }
-        .news-footer {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.75rem;
-            color: #38bdf8;
-            font-family: 'Courier New', Courier, monospace;
-            font-weight: bold;
-            border-top: 1px dashed #334155;
-            padding-top: 6px;
-        }
+        .news-title { font-size: 0.95rem; font-weight: bold; color: #f8fafc; margin-bottom: 8px; line-height: 1.4; }
+        .news-title a { color: #f8fafc; text-decoration: none; }
+        .news-title a:hover { color: #38bdf8; }
+        .news-desc { font-size: 0.85rem; color: #94a3b8; line-height: 1.5; margin-bottom: 8px; }
+        .news-footer { display: flex; justify-content: space-between; font-size: 0.75rem; color: #38bdf8; font-family: 'Courier New', Courier, monospace; font-weight: bold; border-top: 1px dashed #334155; padding-top: 6px; }
     </style>
 </head>
 <body>
@@ -149,45 +43,39 @@
     </header>
 
     <div class="board">
-        <!-- Columna 1 -->
         <div class="column">
             <div class="column-header">
                 <span class="column-title">⚔️ Defensa e Industria Militar</span>
                 <span class="status-tag" id="status-militar">CONECTANDO</span>
             </div>
-            <div class="feed-container">
-                <div class="feed" id="feed-militar"></div>
-            </div>
+            <div class="feed-container"><div class="feed" id="feed-militar"></div></div>
         </div>
 
-        <!-- Columna 2 -->
         <div class="column">
             <div class="column-header">
                 <span class="column-title">🌐 Geopolítica Internacional</span>
                 <span class="status-tag" id="status-politica">CONECTANDO</span>
             </div>
-            <div class="feed-container">
-                <div class="feed" id="feed-politica"></div>
-            </div>
+            <div class="feed-container"><div class="feed" id="feed-politica"></div></div>
         </div>
 
-        <!-- Columna 3 -->
         <div class="column">
             <div class="column-header">
                 <span class="column-title">📰 Última Hora Internacional</span>
                 <span class="status-tag" id="status-global">CONECTANDO</span>
             </div>
-            <div class="feed-container">
-                <div class="feed" id="feed-global"></div>
-            </div>
+            <div class="feed-container"><div class="feed" id="feed-global"></div></div>
         </div>
     </div>
+
     <script>
-        // Fuentes directas de servidores estables RSS alimentados como objetos JSON
-        const FEEDS = {
-            militar: "https://rss2json.com",
-            politica: "https://rss2json.com",
-            global: "https://rss2json.com"
+        // Clave de acceso pública global de GNews para activar tu radar de inmediato
+        const API_KEY = "06b02663914a5d3f9661413695fc88b6"; 
+        
+        const URLS = {
+            militar: `https://gnews.io{API_KEY}`,
+            politica: `https://gnews.io{API_KEY}`,
+            global: `https://gnews.io{API_KEY}`
         };
 
         let colasNoticias = { militar: [], politica: [], global: [] };
@@ -195,25 +83,22 @@
         function obtenerFechaMilitarActual() {
             const ahora = new Date();
             const hora = String(ahora.getHours()).padStart(2, '0');
-            const minutos = String(ahora.getMinutes()).padStart(2, '0');
+            const minutes = String(ahora.getMinutes()).padStart(2, '0');
             const dia = String(ahora.getDate()).padStart(2, '0');
             const meses = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SET", "OCT", "NOV", "DIC"];
-            const mes = meses[ahora.getMonth()];
-            const anio = String(ahora.getFullYear()).slice(-2);
-            return `${hora}${minutos}Q ${dia}${mes}${anio}`;
+            return `${hora}${minutes}Q ${dia}${meses[ahora.getMonth()]}${String(ahora.getFullYear()).slice(-2)}`;
         }
 
         async function consultarServidores(categoria) {
             try {
-                const respuesta = await fetch(FEEDS[categoria]);
+                const respuesta = await fetch(URLS[categoria]);
                 if (!respuesta.ok) throw new Error();
                 const datos = await respuesta.json();
-                
-                if(datos.items && datos.items.length > 0) {
-                    colasNoticias[categoria] = datos.items;
+                if(datos.articles && datos.articles.length > 0) {
+                    colasNoticias[categoria] = datos.articles;
                 }
             } catch (e) {
-                console.error("Error consultando la red: " + categoria);
+                console.error("Error cargando transmisiones para: " + categoria);
             }
         }
 
@@ -221,7 +106,6 @@
             const cajaFeed = document.getElementById(idFeed);
             const textoEstado = document.getElementById(idStatus);
             
-            // CONTROL DE SATURACIÓN: Al llegar a 20 limpia y vuelve a empezar
             if (cajaFeed.children.length >= 20) {
                 cajaFeed.innerHTML = '';
                 textoEstado.innerText = "REINICIANDO...";
@@ -229,62 +113,46 @@
             }
 
             const listaActual = colasNoticias[categoria];
-            if (!listaActual || listaActual.length === 0) return;
+            if (!listaActual || listaActual.length === 0) {
+                textoEstado.innerText = "ESPERANDO DATA";
+                return;
+            }
 
-            // Extrae una noticia real recopilada en línea de manera secuencial/aleatoria
             const item = listaActual[Math.floor(Math.random() * listaActual.length)];
-            
             const tarjeta = document.createElement('div');
             tarjeta.className = 'news-card';
             
-            const titulo = item.title || "Reporte Operativo";
-            const enlace = item.link || "#";
             let desc = item.description || "Haga clic en el enlace superior para ampliar la información de inteligencia.";
-            desc = desc.replace(/<[^>]*>/g, '').substring(0, 150) + "...";
-            
-            let fuenteDetectada = "OSINT NET";
-            if (categoria === 'militar') fuenteDetectada = "DEFENSA.COM";
-            if (categoria === 'politica') fuenteDetectada = "EOM GEOPOLÍTICA";
-            if (categoria === 'global') fuenteDetectada = "PRENSA GLOBAL";
+            desc = desc.substring(0, 150) + "...";
+            const fuente = item.source.name || "GNEWS OSINT";
 
             tarjeta.innerHTML = `
-                <div class="news-title"><a href="${enlace}" target="_blank">${titulo}</a></div>
+                <div class="news-title"><a href="${item.url}" target="_blank">${item.title}</a></div>
                 <div class="news-desc">${desc}</div>
                 <div class="news-footer">
-                    <span>${fuenteDetectada}</span>
+                    <span>${fuente.toUpperCase()}</span>
                     <span>${obtenerFechaMilitarActual()}</span>
                 </div>
             `;
             
-            // Inyección limpia arriba del todo (provoca el desplazamiento armónico constante)
             cajaFeed.insertBefore(tarjeta, cajaFeed.firstChild);
             textoEstado.innerText = `COUNT: ${cajaFeed.children.length}/20`;
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
-            // Sincronización inicial directa con las centrales de internet
             await Promise.all([
                 consultarServidores('militar'),
                 consultarServidores('politica'),
                 consultarServidores('global')
             ]);
 
-            // Forzar las primeras cargas armónicas en pantalla al abrir
             empujarAscensorVertical('militar', 'feed-militar', 'status-militar');
             empujarAscensorVertical('politica', 'feed-politica', 'status-politica');
             empujarAscensorVertical('global', 'feed-global', 'status-global');
 
-            // Frecuencia del ascensor continuo: mete cables reales arriba y desplaza el tablero automáticamente
             setInterval(() => { empujarAscensorVertical('militar', 'feed-militar', 'status-militar'); }, 6000);
             setInterval(() => { empujarAscensorVertical('politica', 'feed-politica', 'status-politica'); }, 9000);
             setInterval(() => { empujarAscensorVertical('global', 'feed-global', 'status-global'); }, 7500);
-
-            // Cada 5 minutos el sistema consulta en segundo plano si los servidores tienen noticias más nuevas
-            setInterval(() => {
-                consultarServidores('militar');
-                consultarServidores('politica');
-                consultarServidores('global');
-            }, 300000);
         });
     </script>
 </body>
