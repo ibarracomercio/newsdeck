@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NewsDeck - Central de Inteligencia Operativa</title>
+    <title>NewsDeck - Central Operativa Inteligente</title>
     
     <style>
         * {
@@ -23,14 +23,50 @@
         header {
             background-color: #1e293b;
             padding: 15px;
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             border-bottom: 1px solid #334155;
+            padding-left: 30px;
+            padding-right: 30px;
         }
         h1 {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             color: #38bdf8;            
             letter-spacing: 0.5px;
         }
+        .btn-control {
+            background-color: #0284c7;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+        .btn-control:hover { background-color: #0369a1; }
+        
+        /* Panel del Formulario Oculto */
+        .admin-panel {
+            background-color: #1e293b;
+            border-bottom: 2px solid #38bdf8;
+            padding: 15px 30px;
+            display: none; /* Se activa al presionar el botón */
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .admin-panel input, .admin-panel select {
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            color: white;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+        .admin-panel input[type="text"] { flex: 1; min-width: 200px; }
+        
         .board {
             display: flex;
             flex: 1;
@@ -52,156 +88,83 @@
             background-color: #0f172a;
             padding: 15px;
             border-bottom: 1px solid #334155;
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 10;
         }
-        .column-title {
-            font-weight: bold;
-            font-size: 0.95rem;
-            color: #f1f5f9;
-        }
-        .status-tag {
-            font-size: 0.75rem;
-            color: #38bdf8;
-            font-weight: bold;
-        }
-        
-        .feed-container {
-            flex: 1;
-            overflow: hidden;
-            padding: 12px;
-            display: flex;
-            flex-direction: column; 
-        }
-
-        .feed {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-        }
+        .column-title { font-weight: bold; font-size: 0.95rem; color: #f1f5f9; }
+        .status-tag { font-size: 0.75rem; color: #38bdf8; font-weight: bold; }
+        .feed-container { flex: 1; overflow: hidden; padding: 12px; display: flex; flex-direction: column; }
+        .feed { display: flex; flex-direction: column; width: 100%; }
         
         @keyframes deslizarEntrada {
-            0% {
-                max-height: 0px;
-                opacity: 0;
-                padding-top: 0px;
-                padding-bottom: 0px;
-                margin-bottom: 0px;
-                transform: translateY(-20px);
-            }
-            100% {
-                max-height: 280px; 
-                opacity: 1;
-                padding-top: 14px;
-                padding-bottom: 14px;
-                margin-bottom: 12px;
-                transform: translateY(0);
-            }
+            0% { max-height: 0px; opacity: 0; padding-top: 0px; padding-bottom: 0px; margin-bottom: 0px; transform: translateY(-20px); }
+            100% { max-height: 280px; opacity: 1; padding-top: 14px; padding-bottom: 14px; margin-bottom: 12px; transform: translateY(0); }
         }
-
         .news-card {
-            background-color: #0f172a;
-            border: 1px solid #334155;
-            border-radius: 6px;
-            padding: 14px;
-            margin-bottom: 12px;
-            overflow: hidden;
+            background-color: #0f172a; border: 1px solid #334155; border-radius: 6px; padding: 14px; margin-bottom: 12px; overflow: hidden;
             animation: deslizarEntrada 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards; 
         }
-        .news-title {
-            font-size: 0.95rem;
-            font-weight: bold;
-            color: #f8fafc;
-            margin-bottom: 8px;
-            line-height: 1.4;
-        }
-        .news-desc {
-            font-size: 0.85rem;
-            color: #94a3b8;
-            line-height: 1.5;
-            margin-bottom: 8px;
-        }
-        .news-footer {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.75rem;
-            color: #38bdf8;
-            font-family: 'Courier New', Courier, monospace;
-            font-weight: bold;
-            border-top: 1px dashed #334155;
-            padding-top: 6px;
-        }
+        .news-title { font-size: 0.95rem; font-weight: bold; color: #f8fafc; margin-bottom: 8px; line-height: 1.4; }
+        .news-desc { font-size: 0.85rem; color: #94a3b8; line-height: 1.5; margin-bottom: 8px; }
+        .news-footer { display: flex; justify-content: space-between; font-size: 0.75rem; color: #38bdf8; font-family: 'Courier New', Courier, monospace; font-weight: bold; border-top: 1px dashed #334155; padding-top: 6px; }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>NewsDeck - Inteligencia Operativa y Monitoreo OSINT</h1>
+        <h1>NewsDeck - Inteligencia Operativa y Red OSINT</h1>
+        <button class="btn-control" onclick="alternarPanel()">⚙️ TRANSMITIR CABLE</button>
     </header>
 
+    <!-- Formulario rápido para inyectar noticias reales de forma nativa -->
+    <div class="admin-panel" id="panel-admin">
+        <select id="input-categoria">
+            <option value="militar">⚔️ Defensa Militar</option>
+            <option value="politica">🌐 Geopolítica Int.</option>
+            <option value="venezuela">🇻🇪 Nacional / Frontera</option>
+        </select>
+        <select id="input-fuente">
+            <option value="Sebastiana Barráez">Sebastiana Barráez</option>
+            <option value="Iván Simonovis">Iván Simonovis</option>
+            <option value="Kilómetro 72">Kilómetro Inteligencia</option>
+            <option value="Infodefensa">Infodefensa</option>
+            <option value="Defensa.com">Defensa.com</option>
+            <option value="OSINT Global">Análisis OSINT</option>
+        </select>
+        <input type="text" id="input-titulo" placeholder="Título del cable de última hora...">
+        <input type="text" id="input-desc" placeholder="Detalles de la información táctica detectada...">
+        <button class="btn-control" style="background-color: #10b981;" onclick="publicarCableReal()">ENVIAR CABLE</button>
+    </div>
+
     <div class="board">
-        <!-- Columna 1 -->
         <div class="column">
             <div class="column-header">
                 <span class="column-title">⚔️ Defensa e Inteligencia Militar</span>
-                <span class="status-tag" id="status-militar">ONLINE</span>
+                <span class="status-tag" id="status-militar">COUNT: 0/20</span>
             </div>
-            <div class="feed-container">
-                <div class="feed" id="feed-militar"></div>
-            </div>
+            <div class="feed-container"><div class="feed" id="feed-militar"></div></div>
         </div>
 
-        <!-- Columna 2 -->
         <div class="column">
             <div class="column-header">
                 <span class="column-title">🌐 Geopolítica Internacional OSINT</span>
-                <span class="status-tag" id="status-politica">ONLINE</span>
+                <span class="status-tag" id="status-politica">COUNT: 0/20</span>
             </div>
-            <div class="feed-container">
-                <div class="feed" id="feed-politica"></div>
-            </div>
+            <div class="feed-container"><div class="feed" id="feed-politica"></div></div>
         </div>
 
-        <!-- Columna 3 -->
         <div class="column">
             <div class="column-header">
                 <span class="column-title">🇻🇪 Situación Nacional y Frontera</span>
-                <span class="status-tag" id="status-venezuela">ONLINE</span>
+                <span class="status-tag" id="status-venezuela">COUNT: 0/20</span>
             </div>
-            <div class="feed-container">
-                <div class="feed" id="feed-venezuela"></div>
-            </div>
+            <div class="feed-container"><div class="feed" id="feed-venezuela"></div></div>
         </div>
     </div>
     <script>
-        // Banco de Datos Expandido con analistas independientes y fuentes OSINT solicitadas
-        const BANCO_NOTICIAS = {
-            militar: [
-                { t: "Infodefensa: Evaluación de blindados en el Caribe", d: "Comisiones técnicas analizan el estado operacional de los transportes de personal blindados y unidades de reconocimiento rápido.", f: "INFODEFENSA" },
-                { t: "Defensa.com: Modernización de sistemas de artillería", d: "Reportes confirman la actualización de sistemas de guiado y radares de contrabatería para ejercicios tácticos de defensa territorial.", f: "DEFENSA.COM" },
-                { t: "Webinfomil: Patrullaje conjunto aeroespacial", d: "Aeronaves de intercepción táctica realizan maniobras de vigilancia coordinada en los límites del espacio aéreo soberano.", f: "WEBINFOMIL" },
-                { t: "Revista Ejércitos: Análisis de guerra electrónica", d: "Sistemas de interferencia GPS y contramedidas electromagnéticas son desplegados en zonas fronterizas calientes.", f: "REVISTA EJÉRCITOS" },
-                { t: "Sputnik Defensa: Despliegue de sistemas de defensa aérea", d: "Baterías misilísticas de medio alcance entran en fase de simulación de respuesta rápida ante vectores no identificados.", f: "SPUTNIK DEFENSE" }
-            ],
-            politica: [
-                { t: "Descifrando la Guerra: Movimientos en el Atlántico Sur", d: "Analistas detectan un incremento en el tránsito de flotas extranjeras cerca de áreas económicas exclusivas de la región.", f: "DESCIFRANDO GUERRA" },
-                { t: "El Orden Mundial: Alianzas estratégicas por recursos", d: "Informes geopolíticos detallan la pugna de las superpotencias por asegurar contratos exclusivos de tierras raras y minerales.", f: "EOM ANALISIS" },
-                { t: "Europa Press: Tensión diplomática intercontinental", d: "Cancillerías intercambian notas de protesta tras el anuncio de nuevas sanciones económicas unilaterales entre bloques.", f: "EUROPA PRESS" },
-                { t: "DW Geopolítica: Monitoreo de fronteras terrestres", d: "Organizaciones internacionales reportan nuevas mesas técnicas bilaterales para regular el flujo logístico en pasos aduaneros.", f: "DW GEOPOLÍTICA" }
-            ],
-            venezuela: [
-                { t: "Sebastiana Barráez: Alerta de seguridad en la frontera", d: "Reportes de inteligencia indican movimientos operativos y reacomodo de estructuras irregulares en el eje Apure-Táchira.", f: "SEBASTIANA BARRÁEZ" },
-                { t: "Iván Simonovis: Alerta táctica sobre seguridad interna", d: "Informaciones de fuentes abiertas sugieren un incremento en los protocolos de control y patrullaje de unidades especiales urbanas.", f: "IVÁN SIMONOVIS" },
-                { t: "Kilómetro Inteligencia: Reporte de flujo energético", d: "Monitoreo independiente registra el estado de suministro y las fluctuaciones logísticas críticas en el sistema eléctrico del occidente del país.", f: "KILÓMETRO 72" },
-                { t: "Efecto Cocuyo: Balance de mesas institucionales", d: "Actualización de las conversaciones y declaraciones de los actores políticos en el marco del seguimiento internacional.", f: "EFECTO COCUYO" },
-                { t: "AlbertoRodNews: Alerta informativa de última hora", d: "Corresponsales confirman el despliegue de dispositivos de control vial en las principales arterias de acceso a la capital.", f: "ALBERTORODNEWS" }
-            ]
-        };
-
+        // Función para dar formato militar real exacto del momento en que publicas: 1618Q 12AGO26
         function obtenerFechaMilitarActual() {
             const ahora = new Date();
             const hora = String(ahora.getHours()).padStart(2, '0');
@@ -213,51 +176,80 @@
             return `${hora}${minutos}Q ${dia}${mes}${anio}`;
         }
 
-        function inyectarNuevaNoticia(categoria, idFeed, idStatus) {
-            const cajaFeed = document.getElementById(idFeed);
-            const textoEstado = document.getElementById(idStatus);
-            
-            // CONTROL DE SATURACIÓN: Al llegar a 20 artículos limpia la pantalla por seguridad
-            if (cajaFeed.children.length >= 20) {
-                cajaFeed.innerHTML = '';
-                textoEstado.innerText = "REINICIANDO...";
+        // Abre y cierra el formulario operativo superior
+        function alternarPanel() {
+            const panel = document.getElementById('panel-admin');
+            panel.style.display = (panel.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        // Procesa la información verídica ingresada y la inyecta al tope del ascensor
+        function publicarCableReal() {
+            const categoria = document.getElementById('input-categoria').value;
+            const fuente = document.getElementById('input-fuente').value;
+            const titulo = document.getElementById('input-titulo').value.trim();
+            const desc = document.getElementById('input-desc').value.trim();
+
+            if (!titulo || !desc) {
+                alert("Alerta: El título y los detalles de inteligencia son obligatorios.");
                 return;
             }
 
-            const lista = BANCO_NOTICIAS[categoria];
-            const noticiaSeleccionada = lista[Math.floor(Math.random() * lista.length)];
-            
+            const nuevaNoticia = {
+                t: titulo,
+                d: desc,
+                f: fuente,
+                h: obtenerFechaMilitarActual()
+            };
+
+            // Guardar permanentemente en la base de datos de la computadora (LocalStorage)
+            let historial = JSON.parse(localStorage.getItem('newsdeck_data')) || { militar: [], politica: [], venezuela: [] };
+            historial[categoria].push(nuevaNoticia);
+            localStorage.setItem('newsdeck_data', JSON.stringify(historial));
+
+            // Dibujar la tarjeta inmediatamente arriba de la columna seleccionada
+            dibujarTarjetaEnPantalla(categoria, nuevaNoticia);
+
+            // Limpiar formulario y ocultarlo
+            document.getElementById('input-titulo').value = '';
+            document.getElementById('input-desc').value = '';
+            alternarPanel();
+        }
+
+        function dibujarTarjetaEnPantalla(categoria, datosNoticia) {
+            const cajaFeed = document.getElementById(`feed-${categoria}`);
+            const textoEstado = document.getElementById(`status-${categoria}`);
+
+            // CONTROL DE SATURACIÓN: Al llegar a 20 artículos limpia la pantalla por seguridad
+            if (cajaFeed.children.length >= 20) {
+                cajaFeed.innerHTML = '';
+            }
+
             const tarjeta = document.createElement('div');
             tarjeta.className = 'news-card';
-            
-            // HORA REAL AUTOMÁTICA: Registra el momento exacto en el que entra la noticia
-            const marcaTiempoMilitar = obtenerFechaMilitarActual();
-
             tarjeta.innerHTML = `
-                <div class="news-title">${noticiaSeleccionada.t}</div>
-                <div class="news-desc">${noticiaSeleccionada.d}</div>
+                <div class="news-title">${datosNoticia.t}</div>
+                <div class="news-desc">${datosNoticia.d}</div>
                 <div class="news-footer">
-                    <span>${noticiaSeleccionada.f}</span>
-                    <span>${marcaTiempoMilitar}</span>
+                    <span>${datosNoticia.f.toUpperCase()}</span>
+                    <span>${datosNoticia.h}</span>
                 </div>
             `;
-            
-            // Coloca el cable arriba del todo, empujando suavemente el resto hacia abajo
-            cajaFeed.insertBefore(tarjeta, cajaFeed.firstChild);
 
+            // Efecto ascensor: Inyecta arriba y desplaza suavemente las anteriores hacia abajo automáticamente
+            cajaFeed.insertBefore(tarjeta, cajaFeed.firstChild);
             textoEstado.innerText = `COUNT: ${cajaFeed.children.length}/20`;
         }
 
+        // Carga de forma progresiva las noticias almacenadas previamente al abrir el software
         document.addEventListener('DOMContentLoaded', () => {
-            // Arranque inicial
-            inyectarNuevaNoticia('militar', 'feed-militar', 'status-militar');
-            inyectarNuevaNoticia('politica', 'feed-politica', 'status-politica');
-            inyectarNuevaNoticia('venezuela', 'feed-venezuela', 'status-venezuela');
-
-            // Flujo continuo del teletipo: alimenta el ascensor de forma constante e independiente
-            setInterval(() => { inyectarNuevaNoticia('militar', 'feed-militar', 'status-militar'); }, 6000);
-            setInterval(() => { inyectarNuevaNoticia('politica', 'feed-politica', 'status-politica'); }, 9000);
-            setInterval(() => { inyectarNuevaNoticia('venezuela', 'feed-venezuela', 'status-venezuela'); }, 7500);
+            const historial = JSON.parse(localStorage.getItem('newsdeck_data')) || { militar: [], politica: [], venezuela: [] };
+            
+            // Re-inyecta las últimas noticias guardadas para que aparezcan al encender la pantalla
+            Object.keys(historial).forEach(cat => {
+                historial[cat].slice(-15).forEach(noticia => {
+                    dibujarTarjetaEnPantalla(cat, noticia);
+                });
+            });
         });
     </script>
 </body>
